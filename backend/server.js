@@ -2,6 +2,7 @@
 const express = require("express");
 const mongoose = require("mongoose");
 const cors = require("cors");
+require("dotenv").config();
 
 // Initialize app
 const app = express();
@@ -10,23 +11,26 @@ const app = express();
 app.use(express.json());
 app.use(cors());
 
-// ✅ Import routes
+// Import routes
 const routes = require("./routes");
 
-// ✅ Use routes
+// Use routes
 app.use("/api", routes);
 
-// MongoDB connection
-mongoose.connect("mongodb://127.0.0.1:27017/rbacDB")
+// ✅ MongoDB connection (USE ENV VARIABLE)
+mongoose
+  .connect(process.env.MONGO_URI)
   .then(() => console.log("MongoDB Connected"))
-  .catch(err => console.log(err));
+  .catch((err) => console.log(err));
 
-// Test route
+// ✅ Root route (important for Render)
 app.get("/", (req, res) => {
-  res.send("Server is running");
+  res.send("API is running...");
 });
 
-// Start server
-app.listen(3001, () => {
-  console.log("Server running on http://localhost:3001");
+// ✅ FIX PORT FOR RENDER
+const PORT = process.env.PORT || 3001;
+
+app.listen(PORT, "0.0.0.0", () => {
+  console.log(`Server running on port ${PORT}`);
 });
